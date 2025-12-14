@@ -18,6 +18,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       `${base}/sitemaps/tournaments`, // Tournament categories
       `${base}/sitemaps/players`, // Player profiles
       `${base}/sitemaps/video`, // Video content (highlights, replays)
+      `${base}/sitemaps/venues`, // Stadium/venue pages
+      `${base}/sitemaps/managers`, // Manager/coach profiles
     ],
     // Additional discovery feeds (not official robots.txt spec but good practice)
     // RSS/Atom are linked in <head> and here for redundancy

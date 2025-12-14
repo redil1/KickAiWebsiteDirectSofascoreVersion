@@ -193,3 +193,57 @@ export const tournamentStandings = pgTable('tournament_standings', {
 }, (table) => ({
   uniqueTournamentSeason: uniqueIndex('tournament_standings_unique_idx').on(table.tournamentId, table.seasonId)
 }))
+
+// ==================== P2 ENTITY EXPANSION TABLES ====================
+
+// Venues (Stadiums) for venue pages - SEO: ~500+ unique pages
+export const venues = pgTable('venues', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  venueId: text('venue_id').unique().notNull(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  city: text('city'),
+  country: text('country'),
+  capacity: integer('capacity'),
+  surface: text('surface'), // e.g., "grass", "artificial"
+  address: text('address'),
+  latitude: doublePrecision('latitude'),
+  longitude: doublePrecision('longitude'),
+  imageUrl: text('image_url'),
+  extra: jsonb('extra'), // Additional data like opened date, etc.
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+// Managers (Coaches) for manager pages - SEO: ~200+ unique pages
+export const managers = pgTable('managers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  managerId: text('manager_id').unique().notNull(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  shortName: text('short_name'),
+  nationality: text('nationality'),
+  dateOfBirthTs: integer('date_of_birth_ts'),
+  teamId: text('team_id'), // Current team
+  teamName: text('team_name'),
+  imageUrl: text('image_url'),
+  extra: jsonb('extra'), // Career history, stats, etc.
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+// Teams table for team pages - SEO: ~500+ unique pages
+export const teams = pgTable('teams', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  teamId: text('team_id').unique().notNull(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  shortName: text('short_name'),
+  country: text('country'),
+  foundedYear: integer('founded_year'),
+  venueId: text('venue_id'), // Home stadium
+  primaryColor: text('primary_color'),
+  secondaryColor: text('secondary_color'),
+  imageUrl: text('image_url'),
+  managerId: text('manager_id'),
+  extra: jsonb('extra'), // Additional data
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
