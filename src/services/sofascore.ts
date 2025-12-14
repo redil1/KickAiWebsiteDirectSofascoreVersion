@@ -135,6 +135,15 @@ export class SofascoreService {
     }
 
     /**
+     * Get Match Momentum Graph
+     */
+    async getMatchGraph(eventId: string): Promise<any | null> {
+        // Both Legacy and Standard seem to support this pattern, but let's be safe
+        // Based on probe: Standard /event/{id}/graph works on Legacy server too.
+        return this.get(`/event/${eventId}/graph`)
+    }
+
+    /**
      * Fetch live score for a match (legacy wrapper for backward compatibility)
      */
     async fetchLiveScore(eventId: string): Promise<LiveScoreData | null> {
