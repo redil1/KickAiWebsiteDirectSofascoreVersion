@@ -75,7 +75,8 @@ export default async function LeaguePage({ params }: PageProps) {
     // Use cached data (fast path)
     tournamentId = cached.tournament_id
     leagueName = cached.name
-    leagueImage = cached.logo_url
+    // Use proxy URL for HTTPS compatibility
+    leagueImage = `/api/image/tournament/${cached.tournament_id}`
     standings = cached.standings?.[0]?.rows || []
   } else {
     // Fallback to live API (slow path)
@@ -92,7 +93,7 @@ export default async function LeaguePage({ params }: PageProps) {
 
     const tournamentDetails = (tournamentDetailsData as any)?.uniqueTournament || null
     leagueName = tournamentDetails?.name || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-    leagueImage = `https://api.sofascore.app/api/v1/unique-tournament/${tournamentId}/image`
+    leagueImage = `/api/image/tournament/${tournamentId}`
 
     // Fetch standings
     if (seasonsData) {
