@@ -9,6 +9,7 @@ import { getEmailBaseUrl, createEmailUrl } from '../utils/url'
 import { runSnapshotAndRevalidate } from '../scripts/snapshotApi'
 import { telegramService } from '../services/telegram'
 import { sofascoreService } from '../services/sofascore'
+import { notifyIndexNow, buildMatchUrl } from '../lib/indexnow'
 
 type JobPayload = Record<string, any>
 
@@ -107,6 +108,29 @@ async function pmmCreateHandler() {
   Array.from(tournamentStats.entries())
     .sort((a, b) => b[1] - a[1])
     .forEach(([name, count]) => console.log(`  - ${name}: ${count} events`))
+
+  // IndexNow: Notify search engines about new/updated match pages
+  try {
+    const matchUrls = allEvents
+      .filter(e => e.status?.type === 'notstarted' || e.status?.code === 0)
+      .map(e => {
+        const home = e.homeTeam?.name || ''
+        const away = e.awayTeam?.name || ''
+        const kickoff = new Date(e.startTimestamp * 1000).toISOString().substring(0, 10)
+        const slug = `${home} vs ${away} ${kickoff}`
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+        return buildMatchUrl(slug)
+      })
+
+    if (matchUrls.length > 0) {
+      console.log(`\n🔔 IndexNow: Notifying search engines about ${matchUrls.length} match pages...`)
+      await notifyIndexNow(matchUrls.slice(0, 1000)) // Max 1000 per batch
+    }
+  } catch (error) {
+    console.error('IndexNow notification failed:', error)
+  }
 
   console.log('\n✅ PMM Create Handler completed - all fixtures processed!')
 }

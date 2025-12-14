@@ -58,6 +58,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Global conversion tracking scripts could go here */}
+        {/* RSS/Atom Feed Discovery Links - for search engines and aggregators */}
+        <link rel="alternate" type="application/rss+xml" title="Live Football Matches RSS Feed" href="/feed/rss" />
+        <link rel="alternate" type="application/atom+xml" title="Live Football Matches Atom Feed" href="/feed/atom" />
       </head>
       <body
         className={`antialiased bg-slate-900`}

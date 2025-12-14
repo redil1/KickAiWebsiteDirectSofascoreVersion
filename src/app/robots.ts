@@ -19,7 +19,11 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       `${base}/sitemaps/players`, // Player profiles
       `${base}/sitemaps/video`, // Video content (highlights, replays)
     ],
+    // Additional discovery feeds (not official robots.txt spec but good practice)
+    // RSS/Atom are linked in <head> and here for redundancy
   }
 }
 
-
+// Note: RSS and Atom feeds are available at:
+// - /feed/rss - RSS 2.0 feed
+// - /feed/atom - Atom 1.0 feed
