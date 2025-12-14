@@ -27,20 +27,9 @@ async function pmmCreateHandler() {
     console.log(`📅 Fetching fixtures for: ${dateStr}`)
 
     try {
-      // Use the new custom football API
-      const resp = await fetch(`http://155.117.46.251:8004/football/events/scheduled?date=${dateStr}`, {
-        headers: {
-          'host': '155.117.46.251:8004',
-          'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
-          'accept': 'application/json',
-          'referer': 'http://155.117.46.251:8004/docs',
-          'accept-encoding': 'gzip, deflate',
-          'accept-language': 'en-US,en;q=0.9'
-        }
-      })
-
-      const data = (await resp.json().catch(() => ({}))) as any
-      const events = data.data?.events || []
+      // Use the service to fetch events (respects legacy/standard from env)
+      const data = await sofascoreService.getScheduledEvents(dateStr)
+      const events = data?.events || []
 
       console.log(`✅ Found ${events.length} events for ${dateStr}`)
       allEvents.push(...events)

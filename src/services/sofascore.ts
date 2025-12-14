@@ -167,7 +167,13 @@ export class SofascoreService {
     /**
      * Get lineups (starting XI, subs, formations)
      */
+    /**
+     * Get lineups (starting XI, subs, formations)
+     */
     async getLineups(eventId: string): Promise<SofascoreLineups | null> {
+        if (this.apiType === 'legacy') {
+            return this.get<SofascoreLineups>(`/football/event/lineups?id=${eventId}`)
+        }
         return this.get<SofascoreLineups>(`/event/${eventId}/lineups`)
     }
 
@@ -175,6 +181,14 @@ export class SofascoreService {
      * Get incidents (goals, cards, subs)
      */
     async getIncidents(eventId: string): Promise<SofascoreIncidents | null> {
+        if (this.apiType === 'legacy') {
+            // Fallback attempt or specific endpoint if known. 
+            // User didn't provide incidents, but it might be in details.
+            // For now, we leave as standard or maybe try a guess?
+            // Safest is to try standard and fail, or guess /football/event/incidents?id=...
+            // Let's guess:
+            return this.get<SofascoreIncidents>(`/football/event/incidents?id=${eventId}`)
+        }
         return this.get<SofascoreIncidents>(`/event/${eventId}/incidents`)
     }
 
@@ -237,6 +251,9 @@ export class SofascoreService {
      * Get league standings/table
      */
     async getStandings(tournamentId: string, seasonId: string): Promise<SofascoreStandings | null> {
+        if (this.apiType === 'legacy') {
+            return this.get<SofascoreStandings>(`/football/tournament/standings?id=${tournamentId}&season_id=${seasonId}`)
+        }
         return this.get<SofascoreStandings>(`/unique-tournament/${tournamentId}/season/${seasonId}/standings/total`)
     }
 
