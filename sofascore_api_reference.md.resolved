@@ -1,0 +1,160 @@
+# SofaScore API Reference
+
+**Base URL:** `https://api.sofascore.com/api/v1`
+
+**Note:** This documentation is reverse-engineered and unofficial.
+
+## 1. Events & Schedule
+
+### 1.1. Scheduled Events by Date
+**Endpoint:** `/sport/{sportSlug}/scheduled-events/{date}`
+**Method:** `GET`
+**Description:** Retrieves a list of all scheduled events for a specific sport on a given date.
+**Parameters:**
+*   `sportSlug` (string, required): e.g., `football`, `basketball`, `tennis`.
+*   `date` (string, required): Format `YYYY-MM-DD`.
+
+**Response Structure:**
+```json
+{
+  "events": [
+    {
+      "tournament": { "name": "Premier League", "slug": "premier-league", ... },
+      "homeTeam": { "name": "Chelsea", "id": 123, ... },
+      "awayTeam": { "name": "Everton", "id": 456, ... },
+      "status": { "code": 100, "description": "Ended", "type": "finished" },
+      "id": 14025192,
+      "startTimestamp": 1765638000,
+      ...
+    }
+  ]
+}
+```
+
+### 1.2. Event Details
+**Endpoint:** `/event/{eventId}`
+**Method:** `GET`
+**Description:** Retrieves detailed information for a single event/match.
+**Parameters:**
+*   `eventId` (integer, required): Unique ID of the event.
+
+**Response Structure:**
+```json
+{
+  "event": {
+    "tournament": { ... },
+    "homeTeam": { ... },
+    "awayTeam": { ... },
+    "homeScore": { "current": 2, "display": 2, ... },
+    "awayScore": { "current": 0, "display": 0, ... },
+    "status": { "code": 7, "description": "2nd half", "type": "inprogress" },
+    "venue": { "name": "Emirates Stadium", ... },
+    "referee": { "name": "Robert Jones", ... },
+    "id": 14025183,
+    ...
+  }
+}
+```
+
+## 2. Teams
+
+### 2.1. Team Details
+**Endpoint:** `/team/{teamId}`
+**Method:** `GET`
+**Description:** Get general information about a team.
+**Parameters:**
+*   `teamId` (integer, required): Unique ID of the team (e.g., `42` for Arsenal).
+
+**Response Structure:**
+```json
+{
+  "team": {
+    "name": "Arsenal",
+    "slug": "arsenal",
+    "sport": { "name": "Football", "slug": "football", "id": 1 },
+    "manager": { "name": "Mikel Arteta", ... },
+    "venue": { "name": "Emirates Stadium", ... },
+    "id": 42,
+    ...
+  }
+}
+```
+
+### 2.2. Team Players (Squad)
+**Endpoint:** `/team/{teamId}/players`
+**Method:** `GET`
+**Description:** Retrieves the current list of players for a team.
+**Parameters:**
+*   `teamId` (integer, required).
+
+**Response Structure:**
+```json
+{
+  "players": [
+    {
+      "player": {
+        "name": "Bukayo Saka",
+        "slug": "bukayo-saka",
+        "position": "F",
+        "jerseyNumber": "7",
+        "dateOfBirthTimestamp": 999648000,
+        "proposedMarketValue": 147000000,
+        "id": 934235,
+        ...
+      }
+    },
+    ...
+  ]
+}
+```
+
+## 3. Players
+
+### 3.1. Player Details
+**Endpoint:** `/player/{playerId}`
+**Method:** `GET`
+**Description:** Get detailed profile information for a player.
+**Parameters:**
+*   `playerId` (integer, required): Unique ID of the player.
+
+**Response Structure:**
+```json
+{
+  "player": {
+    "name": "Bukayo Saka",
+    "slug": "bukayo-saka",
+    "team": { "name": "Arsenal", ... },
+    "position": "F",
+    "height": 178,
+    "preferredFoot": "Left",
+    "id": 934235,
+    ...
+  }
+}
+```
+
+## 4. Tournaments
+
+### 4.1. Tournament Seasons
+**Endpoint:** `/unique-tournament/{uniqueTournamentId}/seasons`
+**Method:** `GET`
+**Description:** Get a list of seasons for a specific tournament.
+**Parameters:**
+*   `uniqueTournamentId` (integer, required): ID of the unique tournament (e.g., `17` for Premier League).
+
+**Response Structure:**
+```json
+{
+  "seasons": [
+    { "name": "Premier League 25/26", "year": "25/26", "id": 76986 },
+    { "name": "Premier League 24/25", "year": "24/25", "id": 61627 },
+    ...
+  ]
+}
+```
+
+## 5. Potential/To-Be-Verified Endpoints (Hypothesis)
+
+*   **Standings:** `/unique-tournament/{uniqueTournamentId}/season/{seasonId}/standings/total`
+*   **Search:** `/search/{query}`
+*   **Transfers:** `/team/{teamId}/transfers` or `/player/{playerId}/transfers`
