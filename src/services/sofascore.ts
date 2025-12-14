@@ -234,7 +234,13 @@ export class SofascoreService {
     /**
      * Get player profile
      */
+    /**
+     * Get player profile
+     */
     async getPlayer(playerId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/player/data?id=${playerId}`)
+        }
         return this.get(`/player/${playerId}`)
     }
 
@@ -242,7 +248,22 @@ export class SofascoreService {
      * Get player transfer history
      */
     async getPlayerTransfers(playerId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/player/transfers?id=${playerId}`)
+        }
         return this.get(`/player/${playerId}/transfer-history`)
+    }
+
+    /**
+     * Get player season statistics
+     */
+    async getPlayerStatistics(playerId: string, seasonId: string, tournamentId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            // Legacy might group stats differently, but let's try a direct map if possible
+            // OR use the 'total' stats endpoint often available
+            return this.get(`/football/player/statistics?id=${playerId}&season_id=${seasonId}&tournament_id=${tournamentId}`)
+        }
+        return this.get(`/player/${playerId}/unique-tournament/${tournamentId}/season/${seasonId}/statistics/overall`)
     }
 
     // ==================== TOURNAMENTS & STANDINGS ====================
