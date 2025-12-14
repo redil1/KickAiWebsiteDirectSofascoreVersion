@@ -3,7 +3,8 @@ import { db } from '../../../db/client'
 import { sql } from 'drizzle-orm'
 import { slugify } from '../../../utils/slug'
 
-export const revalidate = 300
+// Force dynamic rendering - always fetch fresh data
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Trending Football Players Today',
@@ -28,7 +29,7 @@ async function getTrendingPlayers() {
       ORDER BY tp.rating DESC
       LIMIT 50
     `)
-    
+
     console.log('Database query successful, got', result.rows.length, 'rows')
     return result.rows
   } catch (error) {
@@ -60,7 +61,7 @@ export default async function Page() {
           const eventId = player.event_id
           const position = player.position
           const jerseyNumber = player.jersey_number
-          
+
           return (
             <li key={idx} className="rounded border border-gray-800 p-4">
               <div className="flex items-center justify-between">
