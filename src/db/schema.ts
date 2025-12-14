@@ -23,7 +23,7 @@ export const trendingPlayers = pgTable('trending_players', {
 }, (table) => ({
   pk: primaryKey(table.playerId, table.eventId)
 }));
-import { pgTable, text, timestamp, uuid, jsonb, inet, boolean, integer, doublePrecision, primaryKey } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, uuid, jsonb, inet, boolean, integer, doublePrecision, primaryKey, uniqueIndex } from 'drizzle-orm/pg-core'
 
 export const matches = pgTable('matches', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -191,5 +191,5 @@ export const tournamentStandings = pgTable('tournament_standings', {
   standings: jsonb('standings').notNull(), // Full standings array
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 }, (table) => ({
-  uniqueTournamentSeason: primaryKey(table.tournamentId, table.seasonId)
+  uniqueTournamentSeason: uniqueIndex('tournament_standings_unique_idx').on(table.tournamentId, table.seasonId)
 }))
