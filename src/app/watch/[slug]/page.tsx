@@ -23,8 +23,6 @@ import type { Metadata } from 'next'
 
 // Import Advanced Visualizations
 import AttackMomentum from '@/components/Visualizations/AttackMomentum'
-import Shotmap from '@/components/Visualizations/Shotmap'
-import TacticalBoard from '@/components/Visualizations/TacticalBoard'
 import { sofascoreService } from '@/services/sofascore'
 
 // Use Next.js inferred PageProps type via the generated .next types
@@ -119,8 +117,6 @@ export default async function MatchPage({ params }: PageProps) {
   // Ideally, 'match.event_id' should be populated.
 
   let graphData = null
-  let shotmapData = null
-  let avgPosData = null
 
   // Try to use stored event ID if available, otherwise skip (to avoid breaking on undefined)
   // Casting to string/number safely
@@ -128,15 +124,8 @@ export default async function MatchPage({ params }: PageProps) {
 
   if (eventId) {
     try {
-      // Parallel fetch for valid ID
-      const [graph, shotmap, avgPos] = await Promise.all([
-        sofascoreService.getGraph(eventId),
-        sofascoreService.getShotmap(eventId),
-        sofascoreService.getAveragePositions(eventId)
-      ])
-      graphData = graph
-      shotmapData = shotmap
-      avgPosData = avgPos
+      // Fetch graph data
+      graphData = await sofascoreService.getGraph(eventId)
     } catch (e) {
       console.error('Failed to fetch advanced stats:', e)
     }
@@ -354,25 +343,6 @@ export default async function MatchPage({ params }: PageProps) {
               {graphData && (
                 <AttackMomentum
                   data={(graphData as any)?.graphPoints || []}
-                  homeTeam={match.homeTeam as string}
-                  awayTeam={match.awayTeam as string}
-                />
-              )}
-
-              {/* Shotmap */}
-              {shotmapData && (
-                <Shotmap
-                  shots={(shotmapData as any)?.shotmap || []}
-                  homeTeam={match.homeTeam as string}
-                  awayTeam={match.awayTeam as string}
-                />
-              )}
-
-              {/* Tactical Board */}
-              {avgPosData && (
-                <TacticalBoard
-                  homePositions={(avgPosData as any)?.home || []}
-                  awayPositions={(avgPosData as any)?.away || []}
                   homeTeam={match.homeTeam as string}
                   awayTeam={match.awayTeam as string}
                 />
