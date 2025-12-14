@@ -289,7 +289,7 @@ fi
 seed_entity_data() {
     log "Seeding teams, venues, and managers..."
     cd /app
-    if npm run tsx src/scripts/seedTeams.ts 2>&1; then
+    if npm run seed:teams 2>&1; then
         log_success "Teams/venues/managers seeding completed"
         return 0
     else

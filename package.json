@@ -15,6 +15,7 @@
     "seed:email-templates": "npx tsx src/scripts/seedEmailTemplates.ts",
     "seed:matches": "npx tsx src/scripts/seedMatches.ts",
     "seed:tournaments": "npx tsx src/scripts/seedTournaments.ts",
+    "seed:teams": "npx tsx src/scripts/seedTeams.ts",
     "test:email": "npx tsx src/scripts/testEmailNotifications.ts"
   },
   "dependencies": {
