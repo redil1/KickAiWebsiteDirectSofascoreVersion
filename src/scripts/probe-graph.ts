@@ -39,18 +39,20 @@ async function verifyGraph() {
         // Probe Graph Endpoint
         // Standard is /event/{id}/graph
         console.log(`\nProbing /event/${matchId}/graph ...`)
-        const graph = await sofascoreService.get(`/event/${matchId}/graph`)
+        // Cast to any to access private 'get' method for probing
+        const graph = await (sofascoreService as any).get(`/event/${matchId}/graph`)
 
         if (graph) {
             console.log('✅ Graph Data Found!')
-            console.log('Points:', graph.graphPoints?.length || '0')
-            console.log('Sample:', JSON.stringify(graph.graphPoints?.[0] || {}))
+            const points = (graph as any).graphPoints
+            console.log('Points:', points?.length || '0')
+            console.log('Sample:', JSON.stringify(points?.[0] || {}))
         } else {
             console.error('❌ Graph Endpoint returned null/404.')
 
             // Try legacy specific path if standard fails?
             console.log('Probing /football/match/graph ...')
-            const graphLegacy = await sofascoreService.get(`/football/match/graph?id=${matchId}`)
+            const graphLegacy = await (sofascoreService as any).get(`/football/match/graph?id=${matchId}`)
             if (graphLegacy) {
                 console.log('✅ Legacy Graph Found!')
             } else {
