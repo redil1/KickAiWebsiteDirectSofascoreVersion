@@ -90,14 +90,17 @@ export async function seedTournaments() {
           updated_at = NOW()
       `)
 
-            // Upsert standings if available
+            // Upsert standings if available - use DELETE+INSERT since ON CONFLICT requires a constraint not an index
             if (standings && currentSeasonId) {
+                // Delete existing record
+                await db.execute(sql`
+          DELETE FROM tournament_standings 
+          WHERE tournament_id = ${league.tournamentId} AND season_id = ${currentSeasonId}
+        `)
+                // Insert new record
                 await db.execute(sql`
           INSERT INTO tournament_standings (tournament_id, season_id, standings, updated_at)
           VALUES (${league.tournamentId}, ${currentSeasonId}, ${JSON.stringify(standings)}, NOW())
-          ON CONFLICT ON CONSTRAINT tournament_standings_unique_idx DO UPDATE SET
-            standings = EXCLUDED.standings,
-            updated_at = NOW()
         `)
             }
 
