@@ -40,6 +40,9 @@ services:
       - NEXT_PUBLIC_SITE_URL=http://localhost:3000
       - VAPID_PRIVATE_KEY=9MHs0UkajI4yzbEuiWqmj1K7B-PKJJvOIbsXCEAKLSM
       - PUSH_API_SECRET=pushsecret123
+      # Sofascore Configuration (Legacy API Autopilot)
+      - SOFASCORE_API_URL=${SOFASCORE_API_URL:-http://155.117.46.251:8004}
+      - SOFASCORE_API_TYPE=${SOFASCORE_API_TYPE:-legacy}
       # Email/SMTP Configuration
       - SMTP_HOST=${SMTP_HOST:-mail.elitemail.email}
       - SMTP_PORT=${SMTP_PORT:-587}

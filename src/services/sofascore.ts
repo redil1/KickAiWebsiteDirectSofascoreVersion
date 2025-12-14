@@ -58,7 +58,9 @@ export interface SofascoreStandings {
 }
 
 export class SofascoreService {
-    private baseUrl = 'https://api.sofascore.com/api/v1'
+    private baseUrl = process.env.SOFASCORE_API_URL || 'https://api.sofascore.com/api/v1'
+
+    private apiType = process.env.SOFASCORE_API_TYPE || 'standard'
 
     /**
      * Generic GET request handler using got-scraping to bypass Cloudflare
@@ -74,16 +76,23 @@ export class SofascoreService {
                     browsers: [
                         {
                             name: 'chrome',
-                            minVersion: 120,
+                            minVersion: 130,
                         },
                     ],
                     devices: ['desktop'],
                     locales: ['en-US'],
-                    operatingSystems: ['macos'],
+                    operatingSystems: ['windows'],
                 },
+                // Add proxy support
+                proxyUrl: process.env.SOFASCORE_PROXY || process.env.HTTPS_PROXY,
                 responseType: 'json',
                 timeout: { request: 10000 } // 10s timeout
             })
+
+            // Legacy Adapter Transformation
+            if (this.apiType === 'legacy' && (response.body as any).success && (response.body as any).data) {
+                return (response.body as any).data as T;
+            }
 
             return response.body as T
 
@@ -107,6 +116,9 @@ export class SofascoreService {
      * @param sport default 'football'
      */
     async getScheduledEvents(date: string, sport: string = 'football'): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/events/scheduled?date=${date}`)
+        }
         return this.get(`/sport/${sport}/scheduled-events/${date}`)
     }
 
@@ -116,6 +128,9 @@ export class SofascoreService {
      * Fetch match details including status, venue, referee
      */
     async getEvent(eventId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/event/details?id=${eventId}`)
+        }
         return this.get(`/event/${eventId}`)
     }
 
