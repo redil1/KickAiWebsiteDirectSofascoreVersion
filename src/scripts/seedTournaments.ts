@@ -95,7 +95,7 @@ export async function seedTournaments() {
                 await db.execute(sql`
           INSERT INTO tournament_standings (tournament_id, season_id, standings, updated_at)
           VALUES (${league.tournamentId}, ${currentSeasonId}, ${JSON.stringify(standings)}, NOW())
-          ON CONFLICT (tournament_id, season_id) DO UPDATE SET
+          ON CONFLICT ON CONSTRAINT tournament_standings_unique_idx DO UPDATE SET
             standings = EXCLUDED.standings,
             updated_at = NOW()
         `)
