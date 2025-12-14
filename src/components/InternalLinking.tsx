@@ -139,19 +139,19 @@ export default function InternalLinking({ currentMatch, className = '' }: Intern
   const semanticLinks = [
     {
       title: `${currentMatch.league} Live Football Matches & Streams`,
-      href: `/league/${currentMatch.league.toLowerCase().replace(/\s+/g, '-')}`,
+      href: `/leagues/${currentMatch.league.toLowerCase().replace(/\s+/g, '-')}`,
       description: `Watch all ${currentMatch.league} live football matches in 4K quality with HD streaming`,
       keywords: `${currentMatch.league}, live football, football streaming, 4K football`
     },
     {
       title: `${currentMatch.homeTeam} Live Fixtures & Match Schedule`,
-      href: `/team/${currentMatch.homeTeam.toLowerCase().replace(/\s+/g, '-')}`,
+      href: `/teams/${currentMatch.homeTeam.toLowerCase().replace(/\s+/g, '-')}`,
       description: `Complete ${currentMatch.homeTeam} fixtures, live matches, and football streaming schedule`,
       keywords: `${currentMatch.homeTeam}, football fixtures, live matches, team schedule`
     },
     {
       title: `${currentMatch.awayTeam} Football Schedule & Live Streams`,
-      href: `/team/${currentMatch.awayTeam.toLowerCase().replace(/\s+/g, '-')}`,
+      href: `/teams/${currentMatch.awayTeam.toLowerCase().replace(/\s+/g, '-')}`,
       description: `${currentMatch.awayTeam} complete match schedule with live football streaming options`,
       keywords: `${currentMatch.awayTeam}, football schedule, live streaming, team matches`
     },

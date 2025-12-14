@@ -446,7 +446,7 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
         '@type': 'ListItem',
         position: 3,
         name: match.league,
-        item: `${baseUrl}/league/${match.league.toLowerCase().replace(/\s+/g, '-')}`
+        item: `${baseUrl}/leagues/${match.league.toLowerCase().replace(/\s+/g, '-')}`
       },
       {
         '@type': 'ListItem',
