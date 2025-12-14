@@ -535,15 +535,15 @@ export function generateSemanticKeywords(match: MatchData): string[] {
 }
 
 // Generate hreflang tags for international SEO
+// NOTE: Only includes canonical URLs since no actual localized content exists
+// Adding fake localized URLs (e.g., /es/watch/) would cause 404s and hurt SEO
 export function generateHreflangTags(canonicalUrl: string) {
+  // For now, we only declare the canonical URL for all English-speaking regions
+  // When actual translations are added, expand this list with real localized URLs
   const languages = [
     { code: 'en', region: 'US', url: canonicalUrl },
     { code: 'en', region: 'GB', url: canonicalUrl },
-    { code: 'es', region: 'ES', url: canonicalUrl.replace('/watch/', '/es/watch/') },
-    { code: 'fr', region: 'FR', url: canonicalUrl.replace('/watch/', '/fr/watch/') },
-    { code: 'de', region: 'DE', url: canonicalUrl.replace('/watch/', '/de/watch/') },
-    { code: 'it', region: 'IT', url: canonicalUrl.replace('/watch/', '/it/watch/') },
-    { code: 'pt', region: 'BR', url: canonicalUrl.replace('/watch/', '/pt/watch/') }
+    { code: 'x-default', region: '', url: canonicalUrl }, // Default fallback for all other regions
   ]
 
   return languages

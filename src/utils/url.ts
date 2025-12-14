@@ -66,13 +66,20 @@ export function getBaseUrl(req?: { headers: { host?: string; 'x-forwarded-proto'
  * @returns The base URL for sitemap
  */
 export function getSitemapBaseUrl(host?: string): string {
+  // SEO CRITICAL: Always use HTTPS for production sitemaps
+  const forceHttps = process.env.NODE_ENV === 'production' || process.env.HTTPS === 'true' || process.env.SSL === 'true'
+
   // 1. If host is provided (from request headers), use it
   if (host) {
-    const protocol = process.env.HTTPS === 'true' || process.env.SSL === 'true' ? 'https' : 'http';
     // Check if host already includes protocol
     if (host.startsWith('http')) {
+      // Force HTTPS in production
+      if (forceHttps && host.startsWith('http://')) {
+        return host.replace('http://', 'https://').replace(/\/$/, '')
+      }
       return host.replace(/\/$/, '');
     }
+    const protocol = forceHttps ? 'https' : 'http'
     return `${protocol}://${host}`;
   }
 
@@ -118,7 +125,8 @@ export function getSitemapBaseUrl(host?: string): string {
 
   // For VPS deployments, try to detect from common environment variables
   if (process.env.DOMAIN) {
-    const protocol = process.env.SSL === 'true' || process.env.HTTPS === 'true' ? 'https' : 'http';
+    // Always use HTTPS in production
+    const protocol = forceHttps ? 'https' : (process.env.SSL === 'true' || process.env.HTTPS === 'true' ? 'https' : 'http')
     const url = `${protocol}://${process.env.DOMAIN}`;
     console.log('🗺️ Using DOMAIN for sitemap:', url);
     return url;
@@ -149,7 +157,8 @@ export function getSitemapBaseUrl(host?: string): string {
     // Check if we have any hostname info that's not localhost/0.0.0.0
     const hostname = process.env.HOSTNAME || process.env.HOST;
     if (hostname && hostname !== '0.0.0.0' && hostname !== 'localhost' && !hostname.includes('localhost')) {
-      const protocol = process.env.HTTPS === 'true' || process.env.SSL === 'true' ? 'https' : 'http';
+      // Force HTTPS in production
+      const protocol = 'https'
       const port = process.env.PORT && process.env.PORT !== '80' && process.env.PORT !== '443' ? `:${process.env.PORT}` : '';
       const url = `${protocol}://${hostname}${port}`;
       console.log('🗺️ Using constructed URL from hostname for sitemap:', url);

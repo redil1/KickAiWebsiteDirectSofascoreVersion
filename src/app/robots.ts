@@ -17,6 +17,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       `${base}/sitemaps/country`, // Country categories
       `${base}/sitemaps/tournaments`, // Tournament categories
       `${base}/sitemaps/players`, // Player profiles
+      `${base}/sitemaps/video`, // Video content (highlights, replays)
     ],
   }
 }
