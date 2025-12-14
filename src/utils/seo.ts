@@ -96,39 +96,18 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           sport: 'Association Football',
           memberOf: {
             '@type': 'SportsOrganization',
-            name: match.homeTeam.includes('Inter Miami') ? 'Major League Soccer' :
-              match.homeTeam.includes('FC Barcelona') ? 'La Liga' :
-                match.homeTeam.includes('Manchester') ? 'Premier League' : 'Professional Football League'
+            name: match.league
           },
-          athlete: match.homeTeam.includes('Inter Miami') ? [
+          athlete: [
             {
               '@type': 'Person',
-              name: 'Lionel Messi',
-              jobTitle: 'Forward',
-              nationality: 'Argentina'
-            },
-            {
-              '@type': 'Person',
-              name: 'Jordi Alba',
-              jobTitle: 'Defender',
-              nationality: 'Spain'
-            },
-            {
-              '@type': 'Person',
-              name: 'Sergio Busquets',
-              jobTitle: 'Midfielder',
-              nationality: 'Spain'
-            }
-          ] : [
-            {
-              '@type': 'Person',
-              name: 'Star Player',
-              jobTitle: 'Forward'
+              name: `${match.homeTeam} Player`,
+              jobTitle: 'Athlete'
             }
           ],
           coach: {
             '@type': 'Person',
-            name: match.homeTeam.includes('Inter Miami') ? 'Gerardo Martino' : 'Head Coach',
+            name: `${match.homeTeam} Manager`,
             jobTitle: 'Head Coach'
           }
         },
@@ -139,39 +118,18 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           sport: 'Association Football',
           memberOf: {
             '@type': 'SportsOrganization',
-            name: match.awayTeam.includes('Tigres') ? 'Liga MX' :
-              match.awayTeam.includes('Real Madrid') ? 'La Liga' :
-                match.awayTeam.includes('Liverpool') ? 'Premier League' : 'Professional Football League'
+            name: match.league
           },
-          athlete: match.awayTeam.includes('Tigres') ? [
+          athlete: [
             {
               '@type': 'Person',
-              name: 'André-Pierre Gignac',
-              jobTitle: 'Forward',
-              nationality: 'France'
-            },
-            {
-              '@type': 'Person',
-              name: 'Nahuel Guzmán',
-              jobTitle: 'Goalkeeper',
-              nationality: 'Argentina'
-            },
-            {
-              '@type': 'Person',
-              name: 'Diego Reyes',
-              jobTitle: 'Defender',
-              nationality: 'Mexico'
-            }
-          ] : [
-            {
-              '@type': 'Person',
-              name: 'Star Player',
-              jobTitle: 'Forward'
+              name: `${match.awayTeam} Player`,
+              jobTitle: 'Athlete'
             }
           ],
           coach: {
             '@type': 'Person',
-            name: match.awayTeam.includes('Tigres') ? 'Robert Dante Siboldi' : 'Head Coach',
+            name: `${match.awayTeam} Manager`,
             jobTitle: 'Head Coach'
           }
         },
@@ -189,14 +147,12 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
         ],
         location: {
           '@type': 'StadiumOrArena',
-          name: match.homeTeam.includes('Inter Miami') ? 'DRV PNK Stadium' : `${match.homeTeam} Stadium`,
+          name: `${match.homeTeam} Stadium`,
           address: {
             '@type': 'PostalAddress',
-            addressLocality: match.homeTeam.includes('Inter Miami') ? 'Fort Lauderdale' : 'Unknown',
-            addressRegion: match.homeTeam.includes('Inter Miami') ? 'FL' : 'Unknown',
-            addressCountry: match.homeTeam.includes('Inter Miami') ? 'US' : 'GB'
-          },
-          maximumAttendeeCapacity: match.homeTeam.includes('Inter Miami') ? 18000 : 50000
+            addressLocality: 'Unknown',
+            addressCountry: 'GB' // Fallback
+          }
         },
         organizer: {
           '@type': 'Organization',
@@ -336,13 +292,13 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
       '@id': `${canonicalUrl}#lineup-home`,
       name: `${match.homeTeam} Starting Lineup`,
       description: `Starting eleven and formation for ${match.homeTeam} in today's match`,
-      itemListElement: match.homeTeam.includes('Inter Miami') ? [
+      itemListElement: [
         {
           '@type': 'ListItem',
           position: 1,
           item: {
             '@type': 'Person',
-            name: 'Drake Callender',
+            name: 'Starting Goalkeeper',
             jobTitle: 'Goalkeeper'
           }
         },
@@ -351,7 +307,7 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           position: 2,
           item: {
             '@type': 'Person',
-            name: 'Jordi Alba',
+            name: 'Starting Defender',
             jobTitle: 'Defender'
           }
         },
@@ -360,18 +316,8 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           position: 3,
           item: {
             '@type': 'Person',
-            name: 'Lionel Messi',
+            name: 'Starting Forward',
             jobTitle: 'Forward'
-          }
-        }
-      ] : [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          item: {
-            '@type': 'Person',
-            name: 'Starting Goalkeeper',
-            jobTitle: 'Goalkeeper'
           }
         }
       ]
@@ -384,13 +330,13 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
       '@id': `${canonicalUrl}#lineup-away`,
       name: `${match.awayTeam} Starting Lineup`,
       description: `Starting eleven and formation for ${match.awayTeam} in today's match`,
-      itemListElement: match.awayTeam.includes('Tigres') ? [
+      itemListElement: [
         {
           '@type': 'ListItem',
           position: 1,
           item: {
             '@type': 'Person',
-            name: 'Nahuel Guzmán',
+            name: 'Starting Goalkeeper',
             jobTitle: 'Goalkeeper'
           }
         },
@@ -399,7 +345,7 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           position: 2,
           item: {
             '@type': 'Person',
-            name: 'Diego Reyes',
+            name: 'Starting Defender',
             jobTitle: 'Defender'
           }
         },
@@ -408,18 +354,8 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
           position: 3,
           item: {
             '@type': 'Person',
-            name: 'André-Pierre Gignac',
+            name: 'Starting Forward',
             jobTitle: 'Forward'
-          }
-        }
-      ] : [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          item: {
-            '@type': 'Person',
-            name: 'Starting Goalkeeper',
-            jobTitle: 'Goalkeeper'
           }
         }
       ]
@@ -436,19 +372,11 @@ export function generateMatchSEO(match: MatchData, baseUrl: string): SEOData {
       endDate: new Date(kickoff.getTime() + 120 * 60 * 1000).toISOString(),
       organizer: {
         '@type': 'SportsOrganization',
-        name: match.league.includes('Champions League') ? 'UEFA' :
-          match.league.includes('Leagues Cup') ? 'CONCACAF' :
-            match.league.includes('Premier League') ? 'Premier League' : 'Football Association'
+        name: match.league
       },
       location: {
         '@type': 'StadiumOrArena',
-        name: match.homeTeam.includes('Inter Miami') ? 'DRV PNK Stadium' : `${match.homeTeam} Stadium`,
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: match.homeTeam.includes('Inter Miami') ? 'Fort Lauderdale' : 'Unknown',
-          addressRegion: match.homeTeam.includes('Inter Miami') ? 'FL' : 'Unknown',
-          addressCountry: match.homeTeam.includes('Inter Miami') ? 'US' : 'GB'
-        }
+        name: `${match.homeTeam} Stadium`
       }
     }
   ]
