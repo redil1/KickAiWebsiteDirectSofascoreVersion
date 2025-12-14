@@ -2,7 +2,8 @@
 
 # Stage 1: Dependencies
 FROM node:22-alpine AS deps
-RUN apk add --no-cache libc6-compat
+# Build tooling is required for native Node modules when prebuilt binaries are unavailable.
+RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
 # Copy package files
