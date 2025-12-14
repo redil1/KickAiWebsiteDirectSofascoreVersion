@@ -58,9 +58,11 @@ export interface SofascoreStandings {
 }
 
 export class SofascoreService {
-    private baseUrl = process.env.SOFASCORE_API_URL || 'https://api.sofascore.com/api/v1'
+    // Default to Legacy API for stability (Direct IP)
+    private baseUrl = process.env.SOFASCORE_API_URL || 'http://155.117.46.251:8004/api/v1'
 
-    private apiType = process.env.SOFASCORE_API_TYPE || 'standard'
+    // Default to legacy mode to handle data structure correctly
+    private apiType = process.env.SOFASCORE_API_TYPE || 'legacy'
 
     /**
      * Generic GET request handler using got-scraping to bypass Cloudflare
