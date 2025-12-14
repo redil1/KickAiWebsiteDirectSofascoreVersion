@@ -30,6 +30,22 @@ export default function Shotmap({ shots, homeTeam, awayTeam }: ShotmapProps) {
         return true
     })
 
+    // Show message if no data available
+    if (!shots || shots.length === 0) {
+        return (
+            <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                <h3 className="text-white text-xl font-bold flex items-center gap-2 mb-4">
+                    🎯 Shotmap & xG
+                </h3>
+                <div className="text-center py-8 text-gray-400">
+                    <div className="text-4xl mb-3">📊</div>
+                    <p>Shotmap data not available for this match</p>
+                    <p className="text-sm mt-1">Data becomes available during/after the match</p>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
             <div className="flex justify-between items-center mb-6">

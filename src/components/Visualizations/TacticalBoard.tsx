@@ -15,6 +15,22 @@ interface TacticalBoardProps {
 }
 
 export default function TacticalBoard({ homePositions, awayPositions, homeTeam, awayTeam }: TacticalBoardProps) {
+    // Show message if no data available
+    if ((!homePositions || homePositions.length === 0) && (!awayPositions || awayPositions.length === 0)) {
+        return (
+            <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                <h3 className="text-white text-xl font-bold flex items-center gap-2 mb-4">
+                    📋 Average Tactical Positions
+                </h3>
+                <div className="text-center py-8 text-gray-400">
+                    <div className="text-4xl mb-3">🗺️</div>
+                    <p>Tactical position data not available for this match</p>
+                    <p className="text-sm mt-1">Data becomes available during/after the match</p>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
             <h3 className="text-white text-xl font-bold mb-6 flex items-center gap-2">
