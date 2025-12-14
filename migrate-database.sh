@@ -285,5 +285,22 @@ if ! seed_tournaments; then
     log_warning "Tournaments seeding failed, but continuing..."
 fi
 
+# Seed teams, venues, managers (P2 entity expansion)
+seed_entity_data() {
+    log "Seeding teams, venues, and managers..."
+    cd /app
+    if npm run tsx src/scripts/seedTeams.ts 2>&1; then
+        log_success "Teams/venues/managers seeding completed"
+        return 0
+    else
+        log_warning "Teams/venues/managers seeding failed"
+        return 1
+    fi
+}
+
+if ! seed_entity_data; then
+    log_warning "Entity data seeding failed, but continuing..."
+fi
+
 log_success "Database migration process completed successfully"
 exit 0
