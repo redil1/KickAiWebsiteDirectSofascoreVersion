@@ -831,6 +831,18 @@ cron.schedule('10 5 * * *', async () => {
   }
 })
 
+// Update tournaments every 30 minutes
+import { seedTournaments } from '../scripts/seedTournaments'
+cron.schedule('*/30 * * * *', async () => {
+  try {
+    console.log('🏆 Running scheduled tournament update...')
+    await seedTournaments()
+    console.log('✅ Tournament update complete.')
+  } catch (e) {
+    console.error('❌ Tournament update failed:', e)
+  }
+})
+
 new Worker('pmm-create', async () => pmmCreateHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })
 new Worker('pmm-alert', async () => pmmAlertHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })
 new Worker('pmm-live', async () => pmmLiveHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })

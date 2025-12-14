@@ -39,7 +39,7 @@ async function fetchJson(url: string): Promise<any> {
     }
 }
 
-async function seedTournaments() {
+export async function seedTournaments() {
     console.log('🏆 Seeding tournament data...')
 
     let success = 0
@@ -113,9 +113,13 @@ async function seedTournaments() {
     console.log(`\n🏁 Tournament seeding complete: ${success} success, ${failed} failed`)
 }
 
-seedTournaments()
-    .then(() => process.exit(0))
-    .catch((err) => {
-        console.error('❌ seedTournaments failed:', err)
-        process.exit(1)
-    })
+// Execute if run directly
+import { fileURLToPath } from 'url'
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    seedTournaments()
+        .then(() => process.exit(0))
+        .catch((err) => {
+            console.error('❌ seedTournaments failed:', err)
+            process.exit(1)
+        })
+}
