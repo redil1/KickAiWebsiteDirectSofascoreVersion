@@ -175,7 +175,7 @@ export default async function LeaguePage({ params }: PageProps) {
                         <td className="p-3">
                           <Link href={`/teams/${row.team?.slug || row.team?.id}`} className="flex items-center gap-2 text-white hover:text-gold-400">
                             {row.team?.id && (
-                              <img src={`https://api.sofascore.app/api/v1/team/${row.team.id}/image`} alt="" className="w-5 h-5 object-contain" />
+                              <img src={`${process.env.SOFASCORE_API_URL || 'http://155.117.46.251:8004'}/images/team/download/full?team_id=${row.team.id}`} alt="" className="w-5 h-5 object-contain" />
                             )}
                             <span className="font-medium">{row.team?.name}</span>
                           </Link>
@@ -219,7 +219,7 @@ export default async function LeaguePage({ params }: PageProps) {
                     <Link href={`/teams/${row.team?.slug || row.team?.id}`} className="flex items-center gap-3 p-2 rounded hover:bg-white/5 transition">
                       <span className="text-gold-500 font-bold w-5">{i + 1}</span>
                       {row.team?.id && (
-                        <img src={`https://api.sofascore.app/api/v1/team/${row.team.id}/image`} alt="" className="w-6 h-6 object-contain" />
+                        <img src={`${process.env.SOFASCORE_API_URL || 'http://155.117.46.251:8004'}/images/team/download/full?team_id=${row.team.id}`} alt="" className="w-6 h-6 object-contain" />
                       )}
                       <span className="text-white">{row.team?.name}</span>
                       <span className="ml-auto text-gray-400 text-sm">{row.points} pts</span>
