@@ -867,6 +867,18 @@ cron.schedule('*/30 * * * *', async () => {
   }
 })
 
+// Update teams, venues, managers daily at 06:00 UTC
+import { seedTeams } from '../scripts/seedTeams'
+cron.schedule('0 6 * * *', async () => {
+  try {
+    console.log('⚽ Running scheduled teams/venues/managers seeding...')
+    await seedTeams()
+    console.log('✅ Teams/venues/managers seeding complete.')
+  } catch (e) {
+    console.error('❌ Teams seeding failed:', e)
+  }
+})
+
 new Worker('pmm-create', async () => pmmCreateHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })
 new Worker('pmm-alert', async () => pmmAlertHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })
 new Worker('pmm-live', async () => pmmLiveHandler(), { connection: { host: process.env.REDIS_HOST || 'localhost', port: Number(process.env.REDIS_PORT || 6379) } })
