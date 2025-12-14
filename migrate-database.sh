@@ -106,7 +106,7 @@ run_migrations() {
 verify_tables() {
     log "Verifying database tables..."
     
-    local expected_tables="matches trial_sessions app_users referral_credits push_subscriptions one_time_codes rate_events metrics email_notification_history email_templates"
+    local expected_tables="matches trial_sessions app_users referral_credits push_subscriptions one_time_codes rate_events metrics email_notification_history email_templates tournaments tournament_standings players trending_players venues managers teams"
     local missing_tables=""
     
     for table in $expected_tables; do
