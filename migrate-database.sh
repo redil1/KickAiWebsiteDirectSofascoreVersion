@@ -84,7 +84,7 @@ run_migrations() {
     while [ $attempt -le $max_attempts ]; do
         log "Migration attempt $attempt/$max_attempts"
         
-        if { echo "n"; echo ""; } | npm run drizzle:push; then
+        if npm run drizzle:push; then
             log_success "Database migrations completed successfully"
             return 0
         else
