@@ -264,6 +264,18 @@ export class SofascoreService {
         return this.get(`/search/all?q=${encodeURIComponent(query)}`)
     }
 
+    // ==================== GLOBAL METADATA ====================
+
+    /**
+     * Get all categories and tournaments (for Sitemap)
+     */
+    async getCategories(): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get('/football/categories')
+        }
+        return this.get('/sport/football/categories')
+    }
+
     // ==================== ADVANCED VISUALIZATIONS ====================
 
     /**

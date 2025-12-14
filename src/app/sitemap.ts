@@ -146,7 +146,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   })
 
-  // Note: Team and league pages removed as they don't exist in the app structure
+  // SEO DOMINATION: Add League/Category Pages from API
+  try {
+    const { sofascoreService } = await import('@/services/sofascore')
+    console.log('Sitemap: Fetching global categories...')
+    const categoriesData = await sofascoreService.getCategories()
+    const categories = (categoriesData as any)?.categories || []
+
+    console.log(`Sitemap: Found ${categories.length} categories`)
+
+    categories.forEach((cat: any) => {
+      // Add Category Page (e.g. /leagues/england)
+      sitemapEntries.push({
+        url: createSitemapUrl(`/leagues/${cat.slug}`, host),
+        lastModified: now,
+        changeFrequency: 'weekly',
+        priority: 0.7
+      })
+
+      // If category has tournaments embedded (check structure)
+      // Note: Legacy API might nested them or not. We map what we see.
+      // If we want tournaments, we might need a separate fetch or seed.
+      // For now, we stick to Categories to avoid timeout.
+    })
+  } catch (error) {
+    console.error('Sitemap: Error fetching categories:', error)
+  }
+
+  return sitemapEntries.sort((a, b) => (b.priority || 0) - (a.priority || 0))
 
   return sitemapEntries.sort((a, b) => (b.priority || 0) - (a.priority || 0))
 }
