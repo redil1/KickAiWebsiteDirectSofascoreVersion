@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     scorebatEmbed: match.scorebatEmbed as string
   }, baseUrl)
 
-  const hreflangTags = generateHreflangTags(baseUrl, match.slug as string)
+  const hreflangTags = generateHreflangTags(seoData.canonicalUrl)
 
   return {
     title: seoData.title,
