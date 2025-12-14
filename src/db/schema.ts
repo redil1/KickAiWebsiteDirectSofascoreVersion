@@ -29,7 +29,7 @@ export const matches = pgTable('matches', {
   id: uuid('id').defaultRandom().primaryKey(),
   // External provider event id for deep links (/m/[eventId]-[slug])
   eventId: text('event_id'),
-  slug: text('slug').notNull().unique(),
+  slug: text('slug').notNull(),
   homeTeam: text('home_team').notNull(),
   awayTeam: text('away_team').notNull(),
   league: text('league'),
@@ -168,3 +168,28 @@ export const userNotificationHistory = pgTable('user_notification_history', {
 })
 
 
+// ==================== TOURNAMENT CACHING TABLES ====================
+
+// Cache tournament metadata for fast league page loads
+export const tournaments = pgTable('tournaments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  tournamentId: text('tournament_id').unique().notNull(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  country: text('country'),
+  logoUrl: text('logo_url'),
+  currentSeasonId: text('current_season_id'),
+  seasons: jsonb('seasons'), // Array of {id, name, year}
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+// Cache tournament standings for fast league page loads
+export const tournamentStandings = pgTable('tournament_standings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  tournamentId: text('tournament_id').notNull(),
+  seasonId: text('season_id').notNull(),
+  standings: jsonb('standings').notNull(), // Full standings array
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+}, (table) => ({
+  uniqueTournamentSeason: primaryKey(table.tournamentId, table.seasonId)
+}))

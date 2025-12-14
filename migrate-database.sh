@@ -4,6 +4,7 @@
 # This script runs database migrations after PostgreSQL is ready
 
 set -e
+export PGPASSWORD=$DB_PASSWORD
 
 # Color codes for logging
 RED='\033[0;31m'
@@ -207,6 +208,34 @@ seed_matches() {
     return 1
 }
 
+# Function to seed tournaments
+seed_tournaments() {
+    local max_attempts=3
+    local attempt=1
+    
+    log "Seeding tournaments from API..."
+    
+    while [ $attempt -le $max_attempts ]; do
+        log "Tournaments seeding attempt $attempt/$max_attempts"
+        
+        if npm run seed:tournaments; then
+            log_success "Tournaments seeded successfully"
+            return 0
+        else
+            log_warning "Tournaments seeding attempt $attempt failed"
+            if [ $attempt -lt $max_attempts ]; then
+                log "Retrying in 3 seconds..."
+                sleep 3
+            fi
+        fi
+        
+        attempt=$((attempt + 1))
+    done
+    
+    log_warning "Tournaments seeding failed after $max_attempts attempts"
+    return 1
+}
+
 # Main execution
 log "Starting database migration process..."
 
@@ -225,7 +254,7 @@ if ! test_database_connection; then
     exit 1
 fi
 
-# Run migrations
+# Run migrations (drizzle-kit push)
 if ! run_migrations; then
     log_error "Database migration failed"
     exit 1
@@ -249,6 +278,11 @@ fi
 # Seed matches
 if ! seed_matches; then
     log_warning "Matches seeding failed, but continuing..."
+fi
+
+# Seed tournaments
+if ! seed_tournaments; then
+    log_warning "Tournaments seeding failed, but continuing..."
 fi
 
 log_success "Database migration process completed successfully"

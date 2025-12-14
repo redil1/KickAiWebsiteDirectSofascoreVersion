@@ -38,20 +38,37 @@ async function getLeagues(page: number, pageSize: number) {
   }
 }
 
-async function getFeaturedLeagues(limit: number) {
+// Predefined major leagues for Featured section
+const MAJOR_LEAGUES = [
+  { name: 'Premier League', slug: 'premier-league' },
+  { name: 'La Liga', slug: 'la-liga' },
+  { name: 'Bundesliga', slug: 'bundesliga' },
+  { name: 'Serie A', slug: 'serie-a' },
+  { name: 'Ligue 1', slug: 'ligue-1' },
+  { name: 'Champions League', slug: 'champions-league' },
+  { name: 'Europa League', slug: 'europa-league' },
+  { name: 'Eredivisie', slug: 'eredivisie' },
+]
+
+async function getFeaturedLeagues() {
+  // Return predefined major leagues with upcoming match counts from database
   try {
-    const rows = await db.execute(sql`
-      select league, count(*) as c
-      from matches
-      where league is not null and kickoff_iso >= now()
-      group by league
-      order by c desc nulls last
-      limit ${limit}
+    const counts = await db.execute(sql`
+      SELECT league, COUNT(*) as c
+      FROM matches
+      WHERE league IS NOT NULL AND kickoff_iso >= NOW()
+      GROUP BY league
     `)
-    return (rows as any).rows.map((r: any) => ({ name: r.league as string, count: Number(r.c || 0), slug: (r.league || '').toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') }))
+    const countMap = new Map((counts as any).rows.map((r: any) => [r.league, Number(r.c || 0)]))
+
+    return MAJOR_LEAGUES.map(league => ({
+      name: league.name,
+      slug: league.slug,
+      count: countMap.get(league.name) || 0
+    }))
   } catch (err) {
     console.error('Error loading featured leagues:', err)
-    return []
+    return MAJOR_LEAGUES.map(league => ({ name: league.name, slug: league.slug, count: 0 }))
   }
 }
 
@@ -61,7 +78,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
   const pageSize = 50
   const { items, total } = await getLeagues(page, pageSize)
   const pages = Math.max(1, Math.ceil(total / pageSize))
-  const featured = await getFeaturedLeagues(8)
+  const featured = await getFeaturedLeagues()
   const variant = page % 2 === 0 ? 'A' : 'B'
   const trialUrl = process.env.NEXT_PUBLIC_TRIAL_URL || '/trial'
   const pricingUrl = process.env.NEXT_PUBLIC_PRICING_URL || '/pricing'

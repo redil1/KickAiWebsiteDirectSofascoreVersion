@@ -14,6 +14,7 @@
     "populate:trending": "npx tsx src/scripts/populateTrendingPlayers.ts",
     "seed:email-templates": "npx tsx src/scripts/seedEmailTemplates.ts",
     "seed:matches": "npx tsx src/scripts/seedMatches.ts",
+    "seed:tournaments": "npx tsx src/scripts/seedTournaments.ts",
     "test:email": "npx tsx src/scripts/testEmailNotifications.ts"
   },
   "dependencies": {

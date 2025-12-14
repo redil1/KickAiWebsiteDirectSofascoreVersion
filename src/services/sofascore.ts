@@ -59,7 +59,7 @@ export interface SofascoreStandings {
 
 export class SofascoreService {
     // Default to Legacy API for stability (Direct IP)
-    private baseUrl = process.env.SOFASCORE_API_URL || 'http://155.117.46.251:8004/api/v1'
+    private baseUrl = process.env.SOFASCORE_API_URL || 'http://155.117.46.251:8004'
 
     // Default to legacy mode to handle data structure correctly
     private apiType = process.env.SOFASCORE_API_TYPE || 'legacy'
@@ -280,11 +280,31 @@ export class SofascoreService {
     // ==================== TOURNAMENTS & STANDINGS ====================
 
     /**
+     * Get tournament details (name, slug, etc.)
+     */
+    async getTournamentDetails(tournamentId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/tournament/details?tournament_id=${tournamentId}`)
+        }
+        return this.get(`/unique-tournament/${tournamentId}`)
+    }
+
+    /**
+     * Get available seasons for a tournament (for dynamic season lookup)
+     */
+    async getTournamentSeasons(tournamentId: string): Promise<any | null> {
+        if (this.apiType === 'legacy') {
+            return this.get(`/football/tournament/seasons?tournament_id=${tournamentId}`)
+        }
+        return this.get(`/unique-tournament/${tournamentId}/seasons`)
+    }
+
+    /**
      * Get league standings/table
      */
     async getStandings(tournamentId: string, seasonId: string): Promise<SofascoreStandings | null> {
         if (this.apiType === 'legacy') {
-            return this.get<SofascoreStandings>(`/football/tournament/standings?id=${tournamentId}&season_id=${seasonId}`)
+            return this.get<SofascoreStandings>(`/football/tournament/standings?tournament_id=${tournamentId}&season_id=${seasonId}`)
         }
         return this.get<SofascoreStandings>(`/unique-tournament/${tournamentId}/season/${seasonId}/standings/total`)
     }
@@ -294,6 +314,37 @@ export class SofascoreService {
      */
     async search(query: string): Promise<any | null> {
         return this.get(`/search/all?q=${encodeURIComponent(query)}`)
+    }
+
+    async resolveTournamentId(slug: string): Promise<string | null> {
+        try {
+            // Search by slug
+            const searchData = await this.search(slug);
+            const results = (searchData as any)?.results || [];
+
+            // Filter for football unique tournaments
+            const candidates = results.filter((r: any) =>
+                r.type === 'uniqueTournament' &&
+                (r.entity?.sport?.slug === 'football' || r.entity?.category?.sport?.slug === 'football')
+            );
+
+            if (candidates.length === 0) return null;
+
+            // Sort by popularity (score) descending to prioritize major leagues
+            // e.g., "National League" matches England (high score) and Israel (low score)
+            candidates.sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+
+            // Prioritize exact slug match
+            const exactMatch = candidates.find((c: any) => c.entity.slug === slug);
+            if (exactMatch) {
+                return String(exactMatch.entity.id);
+            }
+
+            return String(candidates[0].entity.id);
+        } catch (error) {
+            console.error('Error resolving tournament ID:', error);
+            return null;
+        }
     }
 
     // ==================== GLOBAL METADATA ====================

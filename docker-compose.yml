@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # Cleanup service (run manually with: docker-compose run --rm cleanup)
@@ -26,8 +26,8 @@ services:
     container_name: kickai-all-in-one
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://kickai:${DB_PASSWORD:-StrongKickAIPass2025!}@localhost:5432/kickai_matches
-      - DB_PASSWORD=${DB_PASSWORD:-StrongKickAIPass2025!}
+      - DATABASE_URL=postgresql://kickai:StrongKickAIPass2025@localhost:5432/kickai_matches
+      - DB_PASSWORD=StrongKickAIPass2025
       - REDIS_URL=redis://localhost:6379
       - PORT=3000
       - POSTGRES_DB=kickai_matches

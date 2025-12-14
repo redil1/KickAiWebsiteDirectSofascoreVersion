@@ -88,6 +88,10 @@ COPY --from=builder /app/next.config.ts ./next.config.ts
 COPY --from=builder /app/package.json ./package.json
 COPY --from=deps /app/node_modules ./node_modules
 
+# Fix: Copy header-generator data files for got-scraping (needed at runtime)
+RUN mkdir -p /app/.next/server/chunks/data_files && \
+    cp -r /app/node_modules/header-generator/data_files/* /app/.next/server/chunks/data_files/
+
 # Copy startup scripts
 COPY --chown=root:root ./docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --chown=root:root ./init-postgres.sh /app/init-postgres.sh
