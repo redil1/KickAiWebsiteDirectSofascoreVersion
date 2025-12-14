@@ -347,6 +347,28 @@ export class SofascoreService {
         }
     }
 
+    /**
+     * Team logo URL
+     * - Legacy: served by the legacy backend directly
+     * - Official: proxy through our own origin to avoid cross-site hotlink / bot blocking
+     */
+    getTeamImage(teamId: string | number): string {
+        if (this.apiType === 'legacy') {
+            return `${this.baseUrl}/images/team/download/full?team_id=${teamId}`
+        }
+        return `/api/sofascore/image/team?team_id=${teamId}`
+    }
+
+    /**
+     * Tournament logo URL
+     */
+    getTournamentImage(tournamentId: string | number): string {
+        if (this.apiType === 'legacy') {
+            return `${this.baseUrl}/images/tournament/download?tournament_id=${tournamentId}`
+        }
+        return `/api/sofascore/image/tournament?tournament_id=${tournamentId}`
+    }
+
     // ==================== GLOBAL METADATA ====================
 
     /**
